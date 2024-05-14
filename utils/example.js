@@ -17,3 +17,4 @@ const proof = merkleTree.getProof(index);
 console.log( verifyProof(proof, name, root) ); // true, Norman Block is in the list!
 
 // TRY IT OUT: what happens if you try a name not in the list, or a fake proof?
+console.log(root)
