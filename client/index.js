@@ -5,13 +5,28 @@ const MerkleTree = require('../utils/MerkleTree');
 const serverUrl = 'http://localhost:1225';
 
 async function main() {
-  // TODO: how do we prove to the server we're on the nice list? 
+  // create the merkle tree for the whole nice list
+  const merkleTree = new MerkleTree(niceList);
 
-  const { data: gift } = await axios.post(`${serverUrl}/gift`, {
-    // TODO: add request body parameters here!
-  });
+  // get the root
+  const root = merkleTree.getRoot();
 
-  console.log({ gift });
+  // find the proof that Jacquelyn Beer is in the list
+  const name = 'Jacquelyn Beer';
+  const index = niceList.findIndex(n => n === name);
+  const proof = merkleTree.getProof(index);
+
+  try {
+    const { data: gift } = await axios.post(`${serverUrl}/gift`, {
+      leaf: name,
+      proof: proof,
+      root: root
+    });
+    console.log({ gift });
+  }
+  catch (error) {
+    console.error(error);
+  }
 }
 
 main();
